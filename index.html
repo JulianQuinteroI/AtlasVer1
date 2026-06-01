@@ -87,7 +87,7 @@ aside.sidebar{
 
 /* ---------- Content ---------- */
 .content{flex:1;height:100vh;overflow:hidden;position:relative}
-.content-scroll{height:100vh;overflow-y:auto;overflow-x:hidden;position:relative}
+.content-scroll{height:100vh;overflow-y:auto;overflow-x:hidden;position:relative;display:flex;flex-direction:column}
 .content-scroll::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background-image:linear-gradient(rgba(30,64,110,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(30,64,110,.05) 1px,transparent 1px);
   background-size:42px 42px;mask-image:radial-gradient(ellipse 120% 80% at 50% 0%,#000 55%,transparent 100%)}
@@ -99,6 +99,8 @@ aside.sidebar{
 
 .view{display:none;position:relative;z-index:1}
 .view.active{display:block;animation:viewin .45s cubic-bezier(.22,1,.36,1)}
+/* el mapa llena el espacio restante (sin números mágicos: escala con el zoom) */
+#mapa.view.active{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
 @keyframes viewin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .pad{padding:22px 24px 70px}
 .section-label{font:600 12px 'Oswald';letter-spacing:.18em;text-transform:uppercase;color:var(--tinta-tenue);margin:30px 0 14px;display:flex;align-items:center;gap:10px}
@@ -120,8 +122,8 @@ aside.sidebar{
 .kpi .s{color:var(--ambar);font-size:11px;margin-top:6px;font-weight:600}
 
 /* Map */
-#map{height:100vh;width:100%;background:#dbe6f1}
-#mapView{height:100vh}
+#map{height:100%;width:100%;background:#dbe6f1}
+#mapView{flex:1 1 auto;min-height:0;position:relative;overflow:hidden}
 .leaflet-container{background:#dbe6f1;font-family:'Manrope'}
 .leaflet-popup-content-wrapper{background:var(--glass-bg-solid);color:var(--tinta);border:1px solid var(--glass-brd-hi);border-radius:12px;box-shadow:var(--sombra)}
 .leaflet-popup-tip{background:var(--glass-bg-solid);border:1px solid var(--glass-brd-hi)}
@@ -141,18 +143,20 @@ aside.sidebar{
 @keyframes natopulse{0%,100%{filter:drop-shadow(0 0 0 rgba(63,134,214,0))}50%{filter:drop-shadow(0 0 9px rgba(120,180,255,.9))}}
 .dept-marker{display:grid;place-items:center;font:700 11px 'JetBrains Mono';color:#fff;border-radius:50%;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(30,60,110,.4)}
 .map-panel{position:absolute;z-index:500;background:var(--glass-bg-solid);border:1px solid var(--glass-brd);border-radius:14px;backdrop-filter:blur(var(--blur));box-shadow:var(--sombra)}
-.map-legend{top:14px;right:14px;padding:12px 14px;font-size:12.5px;max-width:236px;max-height:calc(100vh - 28px);overflow:auto}
-.map-legend b{display:block;font:600 11px 'Oswald';letter-spacing:.12em;text-transform:uppercase;color:var(--tinta-tenue);margin:4px 0 8px}
+.map-legend{top:14px;right:14px;padding:10px 12px;font-size:12.5px;max-width:240px;max-height:calc(100% - 28px);overflow:hidden}
+.map-legend .lg-head{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.map-legend .lg-head b{display:block;font:600 11px 'Oswald';letter-spacing:.12em;text-transform:uppercase;color:var(--tinta-tenue);margin:0;flex:1}
+.map-legend .lg-head .chev{width:18px;height:18px;flex:0 0 auto;color:var(--tinta-mut);transition:transform .3s}
+.map-legend.collapsed .lg-head .chev{transform:rotate(-90deg)}
+.map-legend .lg-body{max-height:60vh;overflow:auto;margin-top:8px;transition:max-height .3s ease,opacity .25s,margin-top .3s}
+.map-legend.collapsed .lg-body{max-height:0;opacity:0;margin-top:0;overflow:hidden}
 .map-legend .row{display:flex;align-items:center;gap:9px;padding:4px 6px;border-radius:7px;cursor:pointer;user-select:none;transition:background .2s}
 .map-legend .row:hover{background:rgba(120,160,220,.1)}
 .map-legend .row.off{opacity:.38}
+.map-legend .row.aor .dot{background:var(--ambar)!important}
+.map-legend .lg-sep{height:1px;background:var(--glass-brd);margin:6px 2px}
 .map-legend .dot{width:13px;height:13px;border-radius:50%;flex:0 0 auto;border:2px solid rgba(255,255,255,.25)}
 .map-legend .swatch{width:16px;height:11px;border-radius:2px;flex:0 0 auto}
-.map-title{top:14px;left:14px;padding:13px 16px;max-width:300px}
-.map-title h3{margin:0;font:600 14px 'Oswald';letter-spacing:.08em;color:var(--cian);text-transform:uppercase}
-.map-title p{margin:6px 0 0;font-size:12px;color:var(--tinta-tenue);line-height:1.4}
-.aor-chip{margin-top:10px;display:inline-flex;align-items:center;gap:8px;font:600 11px 'Oswald';letter-spacing:.08em;text-transform:uppercase;color:var(--ambar);background:rgba(245,165,36,.1);border:1px solid rgba(245,165,36,.4);border-radius:20px;padding:5px 11px;cursor:pointer;user-select:none}
-.aor-chip.off{opacity:.45;color:var(--tinta-mut);border-color:var(--glass-brd)}
 .detail{top:0;right:0;height:100%;width:370px;max-width:90vw;border-radius:0;border-left:1px solid var(--glass-brd-hi);transform:translateX(105%);transition:transform .4s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;z-index:520}
 .detail.open{transform:none}
 .detail .dh{padding:18px 20px 14px;border-bottom:1px solid var(--glass-brd)}
@@ -405,11 +409,6 @@ table.data td.num{text-align:right;font-family:'JetBrains Mono';font-size:12.5px
       <section id="mapa" class="view active" style="padding:0">
         <div id="mapView">
           <div id="map"></div>
-          <div class="map-panel map-title glass">
-            <h3>Teatro de Operaciones · CCON 1</h3>
-            <p>Departamentos por semáforo, infraestructura crítica y orden de batalla en símbología OTAN. Clic en un departamento para su ficha.</p>
-            <span class="aor-chip" id="aorChip">▣ Resaltar AOR «ALFA»</span>
-          </div>
           <div class="map-panel map-legend glass" id="mapLegend"></div>
           <div class="map-panel detail glass" id="detail">
             <button class="x" id="detailX">✕</button>
@@ -1838,23 +1837,33 @@ window.TEMA4 = (function () {
       ["apto", "Aeropuertos", "dot", "background:" + T.cyan], ["puerto", "Puertos", "dot", "background:" + T.amber],
       ["hosp", "Hospitales", "dot", "background:" + T.rojo], ["mil", "Unidades (OTAN)", "nato", ""], ["rail", "Corredores férreos", "dot", "background:#ea580c"],
       ["sost", "Sostenimiento (ISR + riesgo)", "dot", "background:linear-gradient(90deg," + T.A + "," + T.M + "," + T.B + ")"]];
-    var lg = $("#mapLegend"); lg.innerHTML = "<b>Capas · clic para alternar</b>";
+    var lg = $("#mapLegend");
+    lg.innerHTML = '<div class="lg-head"><b>Capas · clic para alternar</b>' +
+      '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>' +
+      '<div class="lg-body" id="lgBody"></div>';
+    var body = $("#lgBody");
     items.forEach(function (it) { var r = document.createElement("div"); r.className = "row";
       var vis = it[2] === "nato" ? natoSVG({ dom: "land", rama: "inf", ech: "X" }, 22) : '<span class="dot" style="' + it[3] + '"></span>';
       r.innerHTML = vis + "<span style='margin-left:2px'>" + it[1] + "</span>";
       r.addEventListener("click", function () { var lyr = layers[it[0]]; if (map.hasLayer(lyr)) { map.removeLayer(lyr); r.classList.add("off"); } else { map.addLayer(lyr); r.classList.remove("off"); } });
-      lg.appendChild(r); });
-    L.DomEvent.disableClickPropagation(lg); L.DomEvent.disableClickPropagation($("#detail")); L.DomEvent.disableClickPropagation($(".map-title"));
-
-    // toggle AOR highlight
-    $("#aorChip").addEventListener("click", function () {
+      body.appendChild(r); });
+    // separador + fila AOR «ALFA» (resaltado) como toggle
+    var sep = document.createElement("div"); sep.className = "lg-sep"; body.appendChild(sep);
+    var aorRow = document.createElement("div"); aorRow.className = "row aor";
+    aorRow.innerHTML = '<span class="dot"></span><span style="margin-left:2px">Resaltar AOR «ALFA»</span>';
+    aorRow.addEventListener("click", function () {
       aorOn = !aorOn; this.classList.toggle("off", !aorOn);
       if (aorOn) { aorLayer.addTo(map); aorLayer.bringToBack();
         try { map.flyToBounds(aorLayer.getBounds(), { padding: [40, 40], duration: .8 }); } catch (e) {} }
       else map.removeLayer(aorLayer);
     });
+    body.appendChild(aorRow);
+    // toggle colapsar leyenda
+    lg.querySelector(".lg-head").addEventListener("click", function () { lg.classList.toggle("collapsed"); });
+    L.DomEvent.disableClickPropagation(lg); L.DomEvent.disableClickPropagation($("#detail"));
+
     // arranque: AOR resaltado
-    aorOn = true; $("#aorChip").classList.remove("off"); aorLayer.addTo(map); aorLayer.bringToBack();
+    aorOn = true; aorRow.classList.remove("off"); aorLayer.addTo(map); aorLayer.bringToBack();
   }
 
   /* ============================================================
